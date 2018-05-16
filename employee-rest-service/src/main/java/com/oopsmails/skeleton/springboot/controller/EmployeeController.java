@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
 public class EmployeeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);

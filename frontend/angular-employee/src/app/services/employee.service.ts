@@ -9,7 +9,7 @@ export class EmployeeService {
   constructor(private _http: HttpClient) { }
 
   getEmployees(): Observable<Array<Employee>> {
-    const url = 'http://localhost:18080/employee/';
+    const url = '/employee/';
     return this._http.get<Array<Employee>>(url);
   }
 }
