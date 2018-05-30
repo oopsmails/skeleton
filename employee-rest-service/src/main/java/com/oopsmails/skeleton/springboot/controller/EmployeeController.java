@@ -1,6 +1,8 @@
 package com.oopsmails.skeleton.springboot.controller;
 
 import com.oopsmails.skeleton.springboot.model.Employee;
+import com.oopsmails.skeleton.springboot.model.PropsObj;
+import com.oopsmails.skeleton.springboot.model.PropsResourceObj;
 import com.oopsmails.skeleton.springboot.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +17,26 @@ public class EmployeeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);
 
+    private EmployeeRepository repository;
+
+    private PropsObj propsObj;
+
+    private PropsResourceObj propsResourceObj;
+
     @Autowired
-    EmployeeRepository repository;
+    public void setRepository(EmployeeRepository repository) {
+        this.repository = repository;
+    }
+
+    @Autowired
+    public void setPropsObj(PropsObj propsObj) {
+        this.propsObj = propsObj;
+    }
+
+    @Autowired
+    public void setPropsResourceObj(PropsResourceObj propsResourceObj) {
+        this.propsResourceObj = propsResourceObj;
+    }
 
     @PostMapping("/")
     public Employee add(@RequestBody Employee employee) {
@@ -27,6 +47,12 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public Employee findById(@PathVariable("id") Long id) {
         LOGGER.info("Employee find: id={}", id);
+        LOGGER.info("========Testing @ConfigurationProperties, propsResourceObj.getEmail() = {}",
+                propsResourceObj.getEmail());
+
+        LOGGER.info("========Testing @ConfigurationProperties, propsObj.getHost() = {}", propsObj.getHost());
+        LOGGER.info("========Testing @ConfigurationProperties, propsObj.getHost() = {}",
+                propsObj.getCredentials().getAuthMethod());
         return repository.findById(id);
     }
 

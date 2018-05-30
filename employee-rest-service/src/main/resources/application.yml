@@ -3,3 +3,5 @@ server:
   servlet:
     context-path: /employee
 
+thread-pool: 10
+email: aaa@abc.com
