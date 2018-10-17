@@ -1,12 +1,34 @@
 package com.oopsmails.skeleton.springboot.model;
 
-public class Employee {
+import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
+public class Employee implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Getter
+    @Setter
     private Long id;
+
+    @Getter
+    @Setter
     private Long organizationId;
+
+    @Getter
+    @Setter
     private Long departmentId;
+
+    @Getter
+    @Setter
     private String name;
+
+    @Getter
+    @Setter
     private int age;
+
+    @Getter
+    @Setter
     private String position;
 
     public Employee() {
@@ -18,54 +40,6 @@ public class Employee {
         this.departmentId = departmentId;
         this.name = name;
         this.age = age;
-        this.position = position;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(Long organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
         this.position = position;
     }
 

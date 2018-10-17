@@ -30,11 +30,27 @@ Spring boot backend and Angular frontend
  2018-10-04 09:10:34.708  INFO 13060 --- [io-18080-exec-1] c.o.s.s.controller.EmployeeController    : ========Testing @ConfigurationProperties, propsObj.getHost() = SHA1
 
 
+## caching: hazelcast
+
+SpringEmployeeServiceApplication: @EnableCaching
+HazelcastConfig
+Employee: implements Serializable
+
 
 ## javatest
 
 Spring boot with useful tests/unittests
 
 
+## Postman:
+
+##### Sending post as get?!
+
+- With @PostMapping("/")
+I needed to add a / to the end of my URL so it wouldn't redirect. 
+A 301 redirect will cause a loss of POST data. 
+So when I requested http://localhost/apiDev it would 301 to http://localhost/apiDev/ and lose all the POST data.
+
+- With @PostMapping(""), same. Postman need to (till 20181015) add trailing "/" to disable the redirect by server.
 
 
