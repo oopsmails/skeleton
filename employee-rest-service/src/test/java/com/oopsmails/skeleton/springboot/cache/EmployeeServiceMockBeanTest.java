@@ -1,22 +1,11 @@
 package com.oopsmails.skeleton.springboot.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.oopsmails.skeleton.TestUtils;
 import com.oopsmails.skeleton.springboot.SpringEmployeeServiceApplication;
 import com.oopsmails.skeleton.springboot.model.Employee;
+import com.oopsmails.skeleton.springboot.model.PropsObj;
 import com.oopsmails.skeleton.springboot.repository.EmployeeRepository;
 import com.oopsmails.skeleton.springboot.service.EmployeeService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         classes = {
@@ -39,29 +35,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class EmployeeServiceMockBeanTest {
 
     @Autowired
-    private CacheManager cacheManager;
-
-    @Autowired
     EmployeeRepository employeeRepository;
-
     @Autowired
     EmployeeService employeeService;
+    @Autowired
+    private CacheManager cacheManager;
 
     @Before
     public void setup() {
-        List<Employee> mockedRes = new ArrayList<>();
-        IntStream.range(1, 6).forEach((int i) -> {
-            Employee employee = new Employee();
-            employee.setId(Long.valueOf(i));
-            employee.setName("name " + i);
-            mockedRes.add(employee);
-        });
+        List<Employee> mockedEmployeeList = TestUtils.getMockedEmployeeList();
         when(employeeRepository.findAll(anyString()))
-                .thenReturn(mockedRes);
+                .thenReturn(mockedEmployeeList);
     }
 
     @Test
-    public void testGetDefunctSecuritiesForAccountCaching() throws Exception {
+    public void testFindAllCaching() throws Exception {
         String userId = "userId";
 
         Cache employeeCache = cacheManager.getCache("employeeCache");
@@ -75,12 +63,36 @@ public class EmployeeServiceMockBeanTest {
         // check already cached
         inCacheList = (List<Employee>) employeeCache.get(userId).get(); // get from SimpleValueWrapper
         assertNotNull("2. should be in model now", inCacheList);
-        assertEquals(5, inCacheList.size());
+        assertEquals(10, inCacheList.size());
         assertEquals(inCacheList.size(), employeeList.size());
 
         // call again, make sure the heavy employeeRepository.findAll(userId) is NOT called again, take from model instead.
         employeeService.findAll(userId);
         verify(employeeRepository, times(1)).findAll(userId); // still be called 1 time
+    }
+
+    @Test
+    public void testFindAllCachingObjId() throws Exception {
+        PropsObj propsObj = new PropsObj();
+        propsObj.setFrom("123");
+
+        Cache employeeCache = cacheManager.getCache("employeeCache");
+        List<Employee> inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()); // employeeCache not initialized
+        assertNull("1. should NOT be in model ... ", inCacheList);
+
+        // the heavy employeeRepository.findAll(userId) is called once, because not cached yet.
+        List<Employee> employeeList = employeeService.findAllByPropsObj(propsObj);
+        verify(employeeRepository, times(1)).findAll(propsObj.getFrom());
+
+        // check already cached
+        inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()).get(); // get from SimpleValueWrapper
+        assertNotNull("2. should be in model now", inCacheList);
+        assertEquals(10, inCacheList.size());
+        assertEquals(inCacheList.size(), employeeList.size());
+
+        // call again, make sure the heavy employeeRepository.findAll(userId) is NOT called again, take from model instead.
+        employeeService.findAllByPropsObj(propsObj);
+        verify(employeeRepository, times(1)).findAll(propsObj.getFrom()); // still be called 1 time
     }
 
     @Configuration

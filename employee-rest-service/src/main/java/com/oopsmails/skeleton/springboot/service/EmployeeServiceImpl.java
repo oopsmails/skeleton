@@ -1,6 +1,7 @@
 package com.oopsmails.skeleton.springboot.service;
 
 import com.oopsmails.skeleton.springboot.model.Employee;
+import com.oopsmails.skeleton.springboot.model.PropsObj;
 import com.oopsmails.skeleton.springboot.repository.EmployeeRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<Employee> findAll(String userId) {
         return employeeRepository.findAll(userId);
     }
+
+    @Override
+//    @Cacheable(key = "#propsObj.from")
+    public List<Employee> findAllByPropsObj(PropsObj propsObj) {
+        return employeeRepository.findAll(propsObj.getFrom());
+    }
+
     @Override
     public List<Employee> findByDepartment(Long departmentId) {
         return employeeRepository.findByDepartment(departmentId);

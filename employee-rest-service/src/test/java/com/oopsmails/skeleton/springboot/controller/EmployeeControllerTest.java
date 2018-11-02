@@ -1,5 +1,6 @@
 package com.oopsmails.skeleton.springboot.controller;
 
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -54,6 +55,7 @@ public class EmployeeControllerTest {
         String responseContent = mvcResult.getResponse().getContentAsString();
         List<Employee> result = mapper.readValue(responseContent, new TypeReference<List<Employee>>() {
         });
-        assertNotNull(result);
+        assertNotNull("Returning result should not be null.", result);
+        assertTrue("Returning list should not be empty.", !result.isEmpty());
     }
 }
