@@ -20,7 +20,7 @@ public interface EmployeeService {
 
     List<Employee> findAll(String userId);
 
-    @Cacheable(key = "#propsObj.from")
+//    @Cacheable(key = "#propsObj.from")
     List<Employee> findAllByPropsObj(PropsObj propsObj);
 
     List<Employee> findByDepartment(Long departmentId);

@@ -75,24 +75,31 @@ public class EmployeeServiceMockBeanTest {
     public void testFindAllCachingObjId() throws Exception {
         PropsObj propsObj = new PropsObj();
         propsObj.setFrom("123");
+        PropsObj.Credentials credentials = new PropsObj.Credentials();
+        credentials.setUsername("cacheuser");
+//        propsObj.setCredentials(credentials);
 
         Cache employeeCache = cacheManager.getCache("employeeCache");
-        List<Employee> inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()); // employeeCache not initialized
+//        List<Employee> inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()); // employeeCache not initialized
+        List<Employee> inCacheList = (List<Employee>) employeeCache.get(credentials.getUsername()); // employeeCache not initialized
         assertNull("1. should NOT be in model ... ", inCacheList);
 
         // the heavy employeeRepository.findAll(userId) is called once, because not cached yet.
         List<Employee> employeeList = employeeService.findAllByPropsObj(propsObj);
-        verify(employeeRepository, times(1)).findAll(propsObj.getFrom());
+//        verify(employeeRepository, times(1)).findAll(propsObj.getFrom());
+        verify(employeeRepository, times(1)).findAll(credentials.getUsername());
 
         // check already cached
-        inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()).get(); // get from SimpleValueWrapper
+//        inCacheList = (List<Employee>) employeeCache.get(propsObj.getFrom()).get(); // get from SimpleValueWrapper
+        inCacheList = (List<Employee>) employeeCache.get(credentials.getUsername()).get();
         assertNotNull("2. should be in model now", inCacheList);
         assertEquals(10, inCacheList.size());
         assertEquals(inCacheList.size(), employeeList.size());
 
         // call again, make sure the heavy employeeRepository.findAll(userId) is NOT called again, take from model instead.
         employeeService.findAllByPropsObj(propsObj);
-        verify(employeeRepository, times(1)).findAll(propsObj.getFrom()); // still be called 1 time
+//        verify(employeeRepository, times(1)).findAll(propsObj.getFrom()); // still be called 1 time
+        verify(employeeRepository, times(1)).findAll(credentials.getUsername()); // still be called 1 time
     }
 
     @Configuration

@@ -5,3 +5,12 @@ server:
 
 thread-pool: 10
 email: aaa@abc.com
+
+
+logging:
+  level:
+    #ROOT: DEBUG
+    #org.springframework.web: DEBUG
+    #guru.springframework.controllers: DEBUG
+    #org.hibernate: DEBUG
+    org.springframework.cache: TRACE
