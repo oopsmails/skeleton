@@ -44,19 +44,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 //    @Cacheable(key = "#p0.from") //ok
 //    @Cacheable(key = "#p0.getFrom()") //ok
 //    @Cacheable(key = "#theObj.from") //ok
+
 //    @Cacheable(key = "#theObj.credentials.username") //org.springframework.expression.spel.SpelEvaluationException: EL1007E: Property or field 'username' cannot be found on null
+
+    @CacheEvict(key = "#theObj.credentials.username") //org.springframework.expression.spel.SpelEvaluationException: EL1007E: Property or field 'username' cannot be found on null
+
 //    @Cacheable(key = "#propsObj.credentials.username") //EL1007E: Property or field 'username' cannot be found on null, ok if setCredentials in TestCase
 
 //    @Cacheable(key = "#p0.credentials.username") //ok if setCredentials in TestCase
 
 //    @Cacheable(key = "#propsObj.getCredentials().getUsername()") // EL1011E: Method call: Attempted to call method getUsername() on null context object
-    @Cacheable(key = "#propsObj.credentials != null ? propsObj.credentials.username : 'null'") // ok if add if (propsObj.getCredentials() == null)
-    public List<Employee> findAllByPropsObj(PropsObj propsObj) {
+
+//    @Cacheable(key = "#propsObj.credentials != null ? propsObj.credentials.username : 'null'") // ok if add if (propsObj.getCredentials() == null)
+    public List<Employee> findAllByPropsObj(PropsObj theObj) {
 //        return employeeRepository.findAll(propsObj.getFrom());
-        if (propsObj.getCredentials() == null) {
-            return null;
-        }
-        return employeeRepository.findAll(propsObj.getCredentials().getUsername());
+//        if (propsObj.getCredentials() == null) {
+//            return null;
+//        }
+        return employeeRepository.findAll(theObj.getCredentials().getUsername());
     }
 
     @Override
